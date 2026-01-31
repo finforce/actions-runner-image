@@ -1,0 +1,20 @@
+name: CI
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup git
+        uses: actions/checkout@v6
+      - name: Login to registry
+        run: docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }}
+      - name: Build container
+        run: |
+          docker build -t ghcr.io/finforce/actions-runner-image:latest .
+          docker push ghcr.io/finforce/actions-runner-image:latest
+      - name: Logout from registry
+        run: docker logout ghcr.io
